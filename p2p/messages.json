@@ -1,0 +1,34 @@
+{
+  "socket": {
+    "create": {
+      "win": "{0} socket created",
+      "fail": "Failed to create {0} socket"
+    },
+    "bind": {
+      "win": "Socket bind complete",
+      "fail": "Bind failed. Error Code : {0} Message {1}"
+    },
+    "listen": {
+      "win": "Socket is now listening for incomming connections"
+    },
+    "connect": {
+      "win": "Socket Connected to {0}:{1}",
+      "fail": "Caught exception socket.error : {0}"
+    },
+    "send": {
+      "win": "Send complete",
+      "fail": "Send failed"
+    },
+    "close": "Closing socket connection"
+  },
+  "agent": {
+    "getHostIp": {
+      "win": "Hostname {0} resolved to {1}",
+      "fail": "Hostname {0} could not be resolved"
+    },
+    "getPublicIp": {
+      "win": "Found public IP: {0}",
+      "fail": "Cannot confirm public address: HTTPError = {0}"
+    }
+  }
+}
