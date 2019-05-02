@@ -9,14 +9,14 @@ messages = json.loads(open(os.path.join(os.path.dirname(__file__), 'messages.jso
 
 class Node:
     def __init__(self, port=8888, ):
-        self.client = self.create('Outbound')
+        self.version = 1
         self.server = self.create('Inbound')
-        self.ip = ''
+        self.client = self.create('Outbound')
+        self.ip = self.getPublicIp()
         self.host = ''
         self.port = port
         self.peers = []
 
-        self.getPublicIp()
         self.bind()
         self.listen()
         self.startThreadedServer()
@@ -43,14 +43,17 @@ class Node:
         self.server.listen(10)
         print(messages['socket']['listen']['win'])
 
-    def clientthread(self, conn):
+    def package(self, type, message):
+        return json.dumps({'type': type, 'message': message})
+
+    def clientThread(self, conn):
     	#Sending message to connected client
-    	conn.send('Welcome to the server. Type something and hit enter\n') #send only takes string
+    	#conn.send(self.payload('status','Welcome to the server. Type something and hit enter\n')) #send only takes string
     	#infinite loop so that function do not terminate and thread do not end.
     	while True:
     		#Receiving from client
-    		data = conn.recv(1024)
-    		reply = 'OK...' + data
+    		data = json.loads(conn.recv(1024))
+    		reply = self.package(self.respond(data))
     		if not data:
     			break
     		conn.sendall(reply)
@@ -62,7 +65,7 @@ class Node:
         	conn, addr = self.server.accept()
         	print 'Connected with ' + addr[0] + ':' + str(addr[1])
         	#start new thread takes 1st argument as a function name to be run, second is the tuple of arguments to the function.
-        	start_new_thread(self.clientthread ,(conn,))
+        	start_new_thread(self.clientThread ,(conn,))
 
     def getPublicIp(self):
         try:
@@ -70,7 +73,7 @@ class Node:
         except urllib.HTTPError, e:
             print(messages['agent']['getPublicIp']['fail'].format(str(e.code)))
         print(messages['agent']['getPublicIp']['win'].format(ip))
-        self.ip = ip
+        return ip
 
     def getHostIp(self, host):
         try:
@@ -81,23 +84,36 @@ class Node:
         print(messages['agent']['getHostIp']['win'].format(host, remote_ip))
         return remote_ip
 
-    def connect(s, remote_ip, port):
+    def connect(self, remote_ip, port):
         #Connect to a new peer
         try:
-            s.connect((remote_ip , port))
+            self.client.connect((remote_ip , port))
         except socket.error, exc:
             print(messages['socket']['connect']['fail'].format(exc))
         print(messages['socket']['connect']['win'].format(remote_ip, str(port)))
 
-    def send(s, message):
+    def send(self, type, payload):
         try :
         	#Set the whole string
-        	s.sendall(message)
+        	self.client.sendall(self.package(type, payload))
         except socket.error:
         	#Send failed
         	print messages['socket']['send']['fail']
     	sys.exit()
         print(messages['socket']['send']['win'])
+
+    def respond(self, payload):
+        '''
+        for deciding what to do when I get a message
+        '''
+        type = payload['type']
+        if type is "ping":
+            # send a pong
+            return {"type": "pong"}
+        elif type is "pong":
+            # add node to peerlist
+            print("The node is active")
+
 
     def close(s):
         print(messages['socket']['close'])

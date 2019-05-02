@@ -1,7 +1,9 @@
 from p2p import Node
+from thread import *
 
-s = Node()
 
+a = Node(port=6666)
+a.connect()
 # client = p2p.create()
 #
 # host = p2p.getIp('www.google.com');
