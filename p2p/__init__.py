@@ -53,10 +53,10 @@ class Node:
     	#infinite loop so that function do not terminate and thread do not end.
     	while True:
     		#Receiving from client
-    		data = conn.recv(1024)
+            data = conn.recv(1024)
             if is_json(data):
                 payload = json.loads(data)
-    		    reply = self.package(self.respond(payload))
+                reply = self.package(self.respond(payload))
     		if not data:
     			break
     		conn.sendall(reply)
