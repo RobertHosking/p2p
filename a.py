@@ -3,6 +3,7 @@ from thread import *
 
 
 a = Node(port=6666)
+a.startServer()
 a.connect("192.168.0.37", 6666)
 # client = p2p.create()
 #

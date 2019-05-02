@@ -20,7 +20,6 @@ class Node:
 
         self.bind()
         self.listen()
-        self.startServer()
 
     def create(self, label):
         #create an INET, STREAMing socket
