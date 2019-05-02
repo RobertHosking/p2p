@@ -68,7 +68,7 @@ class Node:
         	start_new_thread(self.clientThread ,(conn,))
 
     def startServer(self):
-        start_new_thread(self.startThreadedServer, (self,))
+        start_new_thread(self.startThreadedServer, ())
 
     def getPublicIp(self):
         try:
