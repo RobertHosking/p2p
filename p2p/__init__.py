@@ -4,6 +4,7 @@ import os
 from thread import *
 import json
 from requests import get
+from helpers import *
 
 messages = json.loads(open(os.path.join(os.path.dirname(__file__), 'messages.json')).read())
 
@@ -52,8 +53,10 @@ class Node:
     	#infinite loop so that function do not terminate and thread do not end.
     	while True:
     		#Receiving from client
-    		data = json.loads(conn.recv(1024))
-    		reply = self.package(self.respond(data))
+    		data = conn.recv(1024)
+            if is_json(data):
+                payload = json.loads(data)
+    		    reply = self.package(self.respond(payload))
     		if not data:
     			break
     		conn.sendall(reply)
