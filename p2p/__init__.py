@@ -19,7 +19,7 @@ class Node:
 
         self.bind()
         self.listen()
-        self.startThreadedServer()
+        self.startServer()
 
     def create(self, label):
         #create an INET, STREAMing socket
@@ -67,6 +67,9 @@ class Node:
         	#start new thread takes 1st argument as a function name to be run, second is the tuple of arguments to the function.
         	start_new_thread(self.clientThread ,(conn,))
 
+    def startServer(self):
+        start_new_thread(self.startThreadedServer, (self,))
+
     def getPublicIp(self):
         try:
             ip = get('https://api.ipify.org').text
@@ -84,7 +87,7 @@ class Node:
         print(messages['agent']['getHostIp']['win'].format(host, remote_ip))
         return remote_ip
 
-    def connect2p(self, remote_ip, port):
+    def connect(self, remote_ip, port):
         #Connect to a new peer
         try:
             self.client.connect((remote_ip , port))
