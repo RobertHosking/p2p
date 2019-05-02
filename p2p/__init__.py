@@ -84,7 +84,7 @@ class Node:
         print(messages['agent']['getHostIp']['win'].format(host, remote_ip))
         return remote_ip
 
-    def connect(self, remote_ip, port):
+    def connect2p(self, remote_ip, port):
         #Connect to a new peer
         try:
             self.client.connect((remote_ip , port))
