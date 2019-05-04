@@ -11,7 +11,7 @@ logging.basicConfig(filename='p2p.log', filemode="a", format='%(asctime)s - %(me
 messages = json.loads(open(os.path.join(os.path.dirname(__file__), 'messages.json')).read())
 
 class Node:
-    def __init__(self, port=8888, ):
+    def __init__(self, port=8888 ):
         self.version = 1
         self.server = self.create('Inbound')
         self.client = self.create('Outbound')
@@ -54,7 +54,6 @@ class Node:
 
     def clientThread(self, conn):
     	#Sending message to connected client
-    	#conn.send(self.payload('status','Welcome to the server. Type something and hit enter\n')) #send only takes string
     	#infinite loop so that function do not terminate and thread do not end.
     	while True:
     		#Receiving from client
@@ -71,6 +70,7 @@ class Node:
         while 1:
             #wait to accept a connection - blocking call
         	conn, addr = self.server.accept()
+            logging.debug(conn + " " + addr)
         	logging.info('Connected with ' + addr[0] + ':' + str(addr[1]))
         	#start new thread takes 1st argument as a function name to be run, second is the tuple of arguments to the function.
         	start_new_thread(self.clientThread ,(conn,))
