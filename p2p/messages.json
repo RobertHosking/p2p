@@ -9,7 +9,7 @@
       "fail": "Bind failed. Error Code : {0} Message {1}"
     },
     "listen": {
-      "win": "Socket is now listening for incomming connections"
+      "win": "Socket is now listening for incomming connections on port {0}"
     },
     "connect": {
       "win": "Socket Connected to {0}:{1}",

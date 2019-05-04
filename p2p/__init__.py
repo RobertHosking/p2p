@@ -47,7 +47,7 @@ class Node:
 
     def listen(self):
         self.server.listen(10)
-        logging.info(messages['socket']['listen']['win'])
+        logging.info(messages['socket']['listen']['win'].format(self.port))
 
     def package(self, type, message=''):
         return json.dumps({'type': type, 'message': message, 'ip': self.ip})
@@ -99,6 +99,7 @@ class Node:
     def connect(self, remote_ip, port):
         #Connect to a new peer
         try:
+            logging.info("Connecting to {0} on port {1}".format(remote_ip, port))
             self.client.connect((remote_ip , port))
         except socket.error, exc:
             logging.error(messages['socket']['connect']['fail'].format(exc))
