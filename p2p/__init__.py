@@ -117,6 +117,7 @@ class Node:
         ip = payload['ip']
         if type is "ping":
             # send a pong
+            print("Pinged by "+ip)
             return self.package('pong')
         elif type is "pong":
             self.peers.append(ip)
