@@ -98,20 +98,20 @@ class Node:
             print(messages['socket']['connect']['fail'].format(exc))
         print(messages['socket']['connect']['win'].format(remote_ip, str(port)))
 
-    def send(self, type, payload):
+    def send(self, package):
         try :
         	#Set the whole string
-        	self.client.sendall(self.package(type, payload))
+        	self.client.sendall(package)
         except socket.error:
         	#Send failed
-        	print messages['socket']['send']['fail']
-    	sys.exit()
+        	print(messages['socket']['send']['fail'])
         print(messages['socket']['send']['win'])
 
     def respond(self, payload):
         '''
         for deciding what to do when I get a message
         '''
+        print(payload)
         type = payload['type']
         message = payload['message']
         ip = payload['ip']

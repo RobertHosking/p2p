@@ -5,7 +5,7 @@ from thread import *
 a = Node(port=6666)
 a.startServer()
 a.connect("138.197.105.184", 6666)
-a.send("ping", "")
+a.send(a.package('ping', ''))
 # client = p2p.create()
 #
 # host = p2p.getIp('www.google.com');
