@@ -44,7 +44,7 @@ class Node:
         self.server.listen(10)
         print(messages['socket']['listen']['win'])
 
-    def package(self, type, message):
+    def package(self, type, message=''):
         return json.dumps({'type': type, 'message': message, 'ip': self.ip})
 
     def clientThread(self, conn):
