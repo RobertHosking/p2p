@@ -5,6 +5,8 @@ from thread import *
 import json
 from requests import get
 from helpers import *
+import logging
+logging.basicConfig(filename='p2p.log', filemode="a", format='%(asctime)s - %(message)s', level=logging.INFO)
 
 messages = json.loads(open(os.path.join(os.path.dirname(__file__), 'messages.json')).read())
 
@@ -27,22 +29,22 @@ class Node:
     	       s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         except socket.error:
-    	       print(messages['socket']['create']['fail'].format(label))
+    	       logging.error(messages['socket']['create']['fail'].format(label))
     	       sys.exit()
-        print(messages['socket']['create']['win'].format(label))
+        logging.info(messages['socket']['create']['win'].format(label))
         return s
 
     def bind(self):
         try:
         	self.server.bind((self.host, self.port))
         except socket.error , msg:
-        	print(messages['socket']['bind']['fail'].format(str(msg[0]), msg[1]))
+        	logging.error(messages['socket']['bind']['fail'].format(str(msg[0]), msg[1]))
         	sys.exit()
-        print(messages['socket']['bind']['win'])
+        logging.info(messages['socket']['bind']['win'])
 
     def listen(self):
         self.server.listen(10)
-        print(messages['socket']['listen']['win'])
+        logging.info(messages['socket']['listen']['win'])
 
     def package(self, type, message=''):
         return json.dumps({'type': type, 'message': message, 'ip': self.ip})
@@ -66,7 +68,7 @@ class Node:
         while 1:
             #wait to accept a connection - blocking call
         	conn, addr = self.server.accept()
-        	print 'Connected with ' + addr[0] + ':' + str(addr[1])
+        	logging.info('Connected with ' + addr[0] + ':' + str(addr[1]))
         	#start new thread takes 1st argument as a function name to be run, second is the tuple of arguments to the function.
         	start_new_thread(self.clientThread ,(conn,))
 
@@ -77,17 +79,17 @@ class Node:
         try:
             ip = get('https://api.ipify.org').text
         except urllib.HTTPError, e:
-            print(messages['agent']['getPublicIp']['fail'].format(str(e.code)))
-        print(messages['agent']['getPublicIp']['win'].format(ip))
+            logging.error(messages['agent']['getPublicIp']['fail'].format(str(e.code)))
+        logging.info(messages['agent']['getPublicIp']['win'].format(ip))
         return ip
 
     def getHostIp(self, host):
         try:
     	    remote_ip = socket.gethostbyname( host )
         except socket.gaierror:
-        	print(messages['agent']['getHostIp']['fail'].format(host))
+        	logging.error(messages['agent']['getHostIp']['fail'].format(host))
         	sys.exit()
-        print(messages['agent']['getHostIp']['win'].format(host, remote_ip))
+        logging.info(messages['agent']['getHostIp']['win'].format(host, remote_ip))
         return remote_ip
 
     def connect(self, remote_ip, port):
@@ -95,17 +97,15 @@ class Node:
         try:
             self.client.connect((remote_ip , port))
         except socket.error, exc:
-            print(messages['socket']['connect']['fail'].format(exc))
-        print(messages['socket']['connect']['win'].format(remote_ip, str(port)))
+            logging.error(messages['socket']['connect']['fail'].format(exc))
+        logging.info(messages['socket']['connect']['win'].format(remote_ip, str(port)))
 
     def send(self, package):
         try :
-        	#Set the whole string
         	self.client.sendall(package)
         except socket.error:
-        	#Send failed
-        	print(messages['socket']['send']['fail'])
-        print(messages['socket']['send']['win'])
+        	logging.error(messages['socket']['send']['fail'])
+        logging.info(messages['socket']['send']['win'])
 
     def respond(self, payload):
         '''
@@ -114,19 +114,19 @@ class Node:
         type = payload['type']
         message = payload['message']
         ip = payload['ip']
-        print("{0} {1} {2}".format(type, ip, message))
+        port = payload['port']
         if type == "ping":
-            # send a pong
-            print("Pinged by "+ip)
+            self.connect(ip, port)
+            logging.info("Pinged by "+ip)
             return self.package('pong')
         elif type == "pong":
             self.peers.append(ip)
-            print("Peer {0} is active".format(message))
+            logging.info("Peer {0} is active".format(message))
         elif type == "alert":
-            print(message)
+            logging.info(message)
             return self.package('ack', "Recieved: " + message)
         elif type == 'ack':
-            print(message)
+            logging.info(message)
             return
         else:
             return self.package('err', "Unknown message recieved")
@@ -134,5 +134,5 @@ class Node:
 
 
     def close(s):
-        print(messages['socket']['close'])
+        logging.warning(messages['socket']['close'])
         s.close()
