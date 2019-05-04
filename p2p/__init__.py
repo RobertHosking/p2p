@@ -29,11 +29,11 @@ class Node:
     def create(self, label):
         #create an INET, STREAMing socket
         try:
-    	       s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-               s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         except socket.error:
-    	       logging.error(messages['socket']['create']['fail'].format(label))
-    	       sys.exit()
+            logging.error(messages['socket']['create']['fail'].format(label))
+            sys.exit()
         logging.info(messages['socket']['create']['win'].format(label))
         return s
 
@@ -41,8 +41,8 @@ class Node:
         try:
         	self.server.bind((self.host, self.port))
         except socket.error , msg:
-        	logging.error(messages['socket']['bind']['fail'].format(str(msg[0]), msg[1]))
-        	sys.exit()
+            logging.error(messages['socket']['bind']['fail'].format(str(msg[0]), msg[1]))
+            sys.exit()
         logging.info(messages['socket']['bind']['win'])
 
     def listen(self):
@@ -83,12 +83,13 @@ class Node:
             ip = get('https://api.ipify.org').text
         except urllib.HTTPError, e:
             logging.error(messages['agent']['getPublicIp']['fail'].format(str(e.code)))
+            sys.exit()
         logging.info(messages['agent']['getPublicIp']['win'].format(ip))
         return ip
 
     def getHostIp(self, host):
         try:
-    	    remote_ip = socket.gethostbyname( host )
+            remote_ip = socket.gethostbyname( host )
         except socket.gaierror:
         	logging.error(messages['agent']['getHostIp']['fail'].format(host))
         	sys.exit()
@@ -101,13 +102,15 @@ class Node:
             self.client.connect((remote_ip , port))
         except socket.error, exc:
             logging.error(messages['socket']['connect']['fail'].format(exc))
+            sys.exit()
         logging.info(messages['socket']['connect']['win'].format(remote_ip, str(port)))
 
     def send(self, package):
         try :
-        	self.client.sendall(package)
+            self.client.sendall(package)
         except socket.error:
-        	logging.error(messages['socket']['send']['fail'])
+            logging.error(messages['socket']['send']['fail'])
+            sys.exit()
         logging.info(messages['socket']['send']['win'])
 
     def respond(self, payload):
