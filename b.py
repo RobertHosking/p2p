@@ -3,7 +3,6 @@ from thread import *
 
 
 b = Node(port=6666)
-b.startThreadedServer()
 # client = p2p.create()
 #
 # host = p2p.getIp('www.google.com');

@@ -20,6 +20,8 @@ class Node:
         self.port = port
         self.peers = []
 
+        print("Node is starting...")
+        self.startServer()
         self.bind()
         self.listen()
 
