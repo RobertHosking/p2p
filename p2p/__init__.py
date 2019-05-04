@@ -111,21 +111,21 @@ class Node:
         '''
         for deciding what to do when I get a message
         '''
-        print(payload)
         type = payload['type']
         message = payload['message']
         ip = payload['ip']
-        if type is "ping":
+        print("{0} {1} {2}".format(type, ip, message))
+        if type == "ping":
             # send a pong
             print("Pinged by "+ip)
             return self.package('pong')
-        elif type is "pong":
+        elif type == "pong":
             self.peers.append(ip)
             print("Peer {0} is active".format(message))
-        elif type is "alert":
+        elif type == "alert":
             print(message)
             return self.package('ack', "Recieved: " + message)
-        elif type is 'ack':
+        elif type == 'ack':
             print(message)
             return
         else:
