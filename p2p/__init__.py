@@ -21,9 +21,10 @@ class Node:
         self.peers = []
 
         print("Node is starting...")
-        self.startServer()
         self.bind()
         self.listen()
+        self.startServer()
+
 
     def create(self, label):
         #create an INET, STREAMing socket
