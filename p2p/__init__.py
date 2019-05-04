@@ -6,7 +6,7 @@ import json
 from requests import get
 from helpers import *
 import logging
-logging.basicConfig(filename='p2p.log', filemode="a", format='%(asctime)s - %(message)s', level=logging.INFO)
+logging.basicConfig(filename='p2p.log', filemode="a", format='%(asctime)s - %(message)s', level=logging.DEBUG)
 
 messages = json.loads(open(os.path.join(os.path.dirname(__file__), 'messages.json')).read())
 
