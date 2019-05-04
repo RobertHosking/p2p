@@ -45,7 +45,7 @@ class Node:
         print(messages['socket']['listen']['win'])
 
     def package(self, type, message):
-        return json.dumps({'type': type, 'message': message})
+        return json.dumps({'type': type, 'message': message, 'ip': self.ip})
 
     def clientThread(self, conn):
     	#Sending message to connected client
@@ -114,11 +114,12 @@ class Node:
         '''
         type = payload['type']
         message = payload['message']
+        ip = payload['ip']
         if type is "ping":
             # send a pong
-            return self.package('pong', self.ip)
+            return self.package('pong')
         elif type is "pong":
-            # add node to peerlist
+            self.peers.append(ip)
             print("Peer {0} is active".format(message))
         elif type is "alert":
             print(message)
@@ -126,6 +127,8 @@ class Node:
         elif type is 'ack':
             print(message)
             return
+        else:
+            return self.package('err', "Unknown message recieved")
 
 
 
