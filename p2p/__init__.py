@@ -25,6 +25,7 @@ class Node:
         #create an INET, STREAMing socket
         try:
     	       s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+               s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         except socket.error:
     	       print(messages['socket']['create']['fail'].format(label))
     	       sys.exit()
@@ -55,7 +56,7 @@ class Node:
             data = conn.recv(1024)
             if is_json(data):
                 payload = json.loads(data)
-                reply = self.package(self.respond(payload))
+                reply = self.respond(payload)
     		if not data:
     			break
     		conn.sendall(reply)
@@ -112,12 +113,20 @@ class Node:
         for deciding what to do when I get a message
         '''
         type = payload['type']
+        message = payload['message']
         if type is "ping":
             # send a pong
-            return {"type": "pong"}
+            return self.package('pong', self.ip)
         elif type is "pong":
             # add node to peerlist
-            print("The node is active")
+            print("Peer {0} is active".format(message))
+        elif type is "alert":
+            print(message)
+            return self.package('ack', "Recieved: " + message)
+        elif type is 'ack':
+            print(message)
+            return
+
 
 
     def close(s):
