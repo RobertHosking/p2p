@@ -69,11 +69,12 @@ class Node:
     def startThreadedServer(self):
         while 1:
             #wait to accept a connection - blocking call
-        	conn, addr = self.server.accept()
+            logging.debug("Waiting for connection")
+            conn, addr = self.server.accept()
             logging.debug(conn + " " + addr)
-        	logging.info('Connected with ' + addr[0] + ':' + str(addr[1]))
-        	#start new thread takes 1st argument as a function name to be run, second is the tuple of arguments to the function.
-        	start_new_thread(self.clientThread ,(conn,))
+            logging.info('Connected with ' + addr[0] + ':' + str(addr[1]))
+            #start new thread takes 1st argument as a function name to be run, second is the tuple of arguments to the function.
+            start_new_thread(self.clientThread ,(conn,))
 
     def startServer(self):
         start_new_thread(self.startThreadedServer, ())
