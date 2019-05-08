@@ -23,7 +23,7 @@ class Node:
         print("Node is starting...")
         self.bind()
         self.listen()
-        self.startServer()
+        self.startThreadedServer()
 
 
     def create(self, label):
@@ -70,6 +70,7 @@ class Node:
         while 1:
             #wait to accept a connection - blocking call
             logging.debug("Waiting for connection")
+            # BREAKING HERE
             conn, addr = self.server.accept()
             logging.debug(conn + " " + addr)
             logging.info('Connected with ' + addr[0] + ':' + str(addr[1]))
@@ -138,8 +139,6 @@ class Node:
             return
         else:
             return self.package('err', "Unknown message recieved")
-
-
 
     def close(s):
         logging.warning(messages['socket']['close'])
