@@ -1,3 +1,3 @@
 from p2p import Node
 
-b = Node(port=6667)
+b = Node(port=6666)
