@@ -20,6 +20,7 @@ class Node:
         self.host = ''
         self.port = port
         self.peers = []
+        self.lock = threading.Lock()
 
         print("Node is starting...")
         self.bind()
@@ -79,9 +80,10 @@ class Node:
             start_new_thread(self.clientThread ,(conn,))
 
     def startServer(self):
-        th = threading.Thread(target=self.startThreadedServer)
-        th.daemon = True
-        th.start()
+        with self.lock:
+            th = threading.Thread(target=self.startThreadedServer)
+            th.daemon = True
+            th.start()
 
     def getPublicIp(self):
         try:
