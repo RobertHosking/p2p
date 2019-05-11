@@ -73,17 +73,17 @@ class Node:
             #wait to accept a connection - blocking call
             logging.debug("Waiting for connection")
             # BREAKING HERE
-            conn, addr = self.server.accept()
-            logging.debug(conn + " " + addr)
-            logging.info('Connected with ' + addr[0] + ':' + str(addr[1]))
-            #start new thread takes 1st argument as a function name to be run, second is the tuple of arguments to the function.
-            start_new_thread(self.clientThread ,(conn,))
+            with self.lock:
+                conn, addr = self.server.accept()
+                logging.debug(conn + " " + addr)
+                logging.info('Connected with ' + addr[0] + ':' + str(addr[1]))
+                #start new thread takes 1st argument as a function name to be run, second is the tuple of arguments to the function.
+                start_new_thread(self.clientThread ,(conn,))
 
     def startServer(self):
-        with self.lock:
-            th = threading.Thread(target=self.startThreadedServer)
-            th.daemon = True
-            th.start()
+        th = threading.Thread(target=self.startThreadedServer)
+        th.daemon = True
+        th.start()
 
     def getPublicIp(self):
         try:
