@@ -2,6 +2,7 @@ import socket	#for sockets
 import sys	#for exit
 import os
 from thread import *
+import threading
 import json
 from requests import get
 from helpers import *
@@ -23,7 +24,7 @@ class Node:
         print("Node is starting...")
         self.bind()
         self.listen()
-        self.startThreadedServer()
+        self.startServer()
 
 
     def create(self, label):
@@ -78,7 +79,9 @@ class Node:
             start_new_thread(self.clientThread ,(conn,))
 
     def startServer(self):
-        start_new_thread(self.startThreadedServer, ())
+        th = threading.Thread(target=self.startThreadedServer)
+        th.daemon = True
+        th.start()
 
     def getPublicIp(self):
         try:

@@ -1,3 +1,4 @@
 .env/
 .idea/
+.vscode/
 p2p.log
